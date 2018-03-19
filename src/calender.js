@@ -4,8 +4,82 @@
  */
 import {isLeapYear} from './utils.js';
 
+/*每个月的天数*/
+const monthDays = [
+    [31,29,31,30,31,30,31,31,30,31,30,31],
+    [31,28,31,30,31,30,31,31,30,31,30,31]
+]
 export default class Calender {
-    constructor(){
-        let date = new Date();
+    constructor(str){
+        this.date = new Date(str);
+    }
+    setDate(){
+
+    }
+    /*生成 5 * 7 的数组，对应一个月（包含上个月的最后几天和下个月的开头几天）*/
+    genMonth(){
+        let {date} = this;
+        let y = date.getFullYear(),
+            m = date.getMonth(),
+            d = date.getDay();
+    }
+    genWeek(){
+        let {date} = this;
+        let y = date.getFullYear(),
+            m = date.getMonth(),
+            d = date.getDate(),
+            wd = date.getDay() == 0 ? 7 : date.getDay(),  // 1 ~ 7 周几
+            arr = [],
+            mDays = monthDays[isLeapYear(y) ? 0 : 1];/*每个月对应的天数*/
+        if(d < wd){
+            /*第一周，有上周的日期*/
+            let lastMonthDays = mDays[(m + 11) % 12];
+            let start = lastMonthDays - (wd -d) + 1;
+            m == 0 && y--;
+            while(start <= lastMonthDays){
+                arr.push({
+                    date:[y, m == 0 ? 12 : m, start++],
+                    belong:'last'
+                });
+            };
+            var i=1;
+            var end = d + 7 - wd;
+            while(i <= end){
+                arr.push({
+                    date:[y,m+1,i++],
+                    belong:'current'
+                });
+            }
+            return arr;
+        }
+        var last = (d + (7 - wd - 1)) % mDays[m];
+        if(last < d){
+            /*一个月的最后一周，有下周的日期*/
+            var start = d - wd;
+            while(start <= mDays[m]){
+                arr.push({
+                    date:[y,m+1,start++],
+                    belong:'current'
+                });
+            };
+            var i=1;
+            m == 11 && y++;
+            while(i<=last){
+                arr.push({
+                    date:[y,m==11 ? 1 : m + 1, i],
+                    belong:'next'
+                })
+            }
+            return arr;
+        }
+        var s = d - wd + 1,
+            e = d + 7- wd;
+        while(s<=e){
+            arr.push({
+                date:[y,m+1,s++],
+                belong:'current'
+            })
+        }
+        return arr;
     }
 }

@@ -76,7 +76,9 @@ var _calender2 = _interopRequireDefault(_calender);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var c = new _calender2.default();
+var c = new _calender2.default('2017-12-29');
+
+console.log(c.genWeek());
 
 /***/ }),
 /* 1 */
@@ -89,19 +91,107 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @class 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @description 一个日历类
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+
+
 var _utils = __webpack_require__(2);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /**
-                                                                                                                                                           * @class 
-                                                                                                                                                           * @description 一个日历类
-                                                                                                                                                           */
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/*每个月的天数*/
+var monthDays = [[31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]];
 
-var Calender = function Calender() {
-    _classCallCheck(this, Calender);
+var Calender = function () {
+    function Calender(str) {
+        _classCallCheck(this, Calender);
 
-    var date = new Date();
-};
+        this.date = new Date(str);
+    }
+
+    _createClass(Calender, [{
+        key: 'setDate',
+        value: function setDate() {}
+        /*生成 5 * 7 的数组，对应一个月（包含上个月的最后几天和下个月的开头几天）*/
+
+    }, {
+        key: 'genMonth',
+        value: function genMonth() {
+            var date = this.date;
+
+            var y = date.getFullYear(),
+                m = date.getMonth(),
+                d = date.getDay();
+        }
+    }, {
+        key: 'genWeek',
+        value: function genWeek() {
+            var date = this.date;
+
+            var y = date.getFullYear(),
+                m = date.getMonth(),
+                d = date.getDate(),
+                wd = date.getDay() == 0 ? 7 : date.getDay(),
+                // 1 ~ 7 周几
+            arr = [],
+                mDays = monthDays[(0, _utils.isLeapYear)(y) ? 0 : 1]; /*每个月对应的天数*/
+            if (d < wd) {
+                /*第一周，有上周的日期*/
+                var lastMonthDays = mDays[(m + 11) % 12];
+                var _start = lastMonthDays - (wd - d) + 1;
+                m == 0 && y--;
+                while (_start <= lastMonthDays) {
+                    arr.push({
+                        date: [y, m == 0 ? 12 : m, _start++],
+                        belong: 'last'
+                    });
+                };
+                var i = 1;
+                var end = d + 7 - wd;
+                while (i <= end) {
+                    arr.push({
+                        date: [y, m + 1, i++],
+                        belong: 'current'
+                    });
+                }
+                return arr;
+            }
+            var last = (d + (7 - wd - 1)) % mDays[m];
+            if (last < d) {
+                /*一个月的最后一周，有下周的日期*/
+                var start = d - wd;
+                while (start <= mDays[m]) {
+                    arr.push({
+                        date: [y, m + 1, start++],
+                        belong: 'current'
+                    });
+                };
+                var i = 1;
+                m == 11 && y++;
+                while (i <= last) {
+                    arr.push({
+                        date: [y, m == 11 ? 1 : m + 1, i],
+                        belong: 'next'
+                    });
+                }
+                return arr;
+            }
+            var s = d - wd + 1,
+                e = d + 7 - wd;
+            while (s <= e) {
+                arr.push({
+                    date: [y, m + 1, s++],
+                    belong: 'current'
+                });
+            }
+            return arr;
+        }
+    }]);
+
+    return Calender;
+}();
 
 exports.default = Calender;
 
