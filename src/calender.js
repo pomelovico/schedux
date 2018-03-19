@@ -89,15 +89,24 @@ export default class Calender {
     genWeekByTs(){
         console.time();
         let {date} = this;
-        let wd = date.getDay() == 0 ? 7 : date.getDay() ;//周几
-        let d =  date.getDate();
+        let wd = date.getDay() == 0 ? 7 : date.getDay() ,
+            d =  date.getDate(),
+            cm = date.getMonth();
         let arr = [],
             startTs = date.getTime() - wd * 86400000;
-        let i = 0;
+        let i = 0,
+            belong = 'current';
         while((i++)<7){
             var dd = new Date(startTs + 86400000 * i);
+            var m = dd.getMonth();
+            if((m < cm) || (cm ==0 && m ==11)){
+                belong = 'last';
+            }else if((m > cm) || (cm == 11 && m == 0)){
+                belong = 'next';
+            }
             arr.push({
-                date:[dd.getFullYear(),dd.getMonth() +1,dd.getDate()]
+                date:[dd.getFullYear(),m + 1,dd.getDate()],
+                belong:belong
             })
         }
         console.timeEnd();

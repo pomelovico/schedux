@@ -76,20 +76,10 @@ var _calender2 = _interopRequireDefault(_calender);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var c = new _calender2.default('2017-1-29');
+var c = new _calender2.default('2018-1-29');
 
 console.log(c.genWeek());
 console.log(c.genWeekByTs());
-
-// c.setDate('2018-1-2');
-
-// console.log(c.genWeek());
-// console.log(c.genWeekByTs());
-
-// c.setDate('2018-1-15');
-
-// console.log(c.genWeek());
-// console.log(c.genWeekByTs());
 
 /***/ }),
 /* 1 */
@@ -209,15 +199,24 @@ var Calender = function () {
             console.time();
             var date = this.date;
 
-            var wd = date.getDay() == 0 ? 7 : date.getDay(); //周几
-            var d = date.getDate();
+            var wd = date.getDay() == 0 ? 7 : date.getDay(),
+                d = date.getDate(),
+                cm = date.getMonth();
             var arr = [],
                 startTs = date.getTime() - wd * 86400000;
-            var i = 0;
+            var i = 0,
+                belong = 'current';
             while (i++ < 7) {
                 var dd = new Date(startTs + 86400000 * i);
+                var m = dd.getMonth();
+                if (m < cm || cm == 0 && m == 11) {
+                    belong = 'last';
+                } else if (m > cm || cm == 11 && m == 0) {
+                    belong = 'next';
+                }
                 arr.push({
-                    date: [dd.getFullYear(), dd.getMonth() + 1, dd.getDate()]
+                    date: [dd.getFullYear(), m + 1, dd.getDate()],
+                    belong: belong
                 });
             }
             console.timeEnd();
