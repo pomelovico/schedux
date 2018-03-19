@@ -76,9 +76,20 @@ var _calender2 = _interopRequireDefault(_calender);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var c = new _calender2.default('2017-12-29');
+var c = new _calender2.default('2017-1-29');
 
 console.log(c.genWeek());
+console.log(c.genWeekByTs());
+
+// c.setDate('2018-1-2');
+
+// console.log(c.genWeek());
+// console.log(c.genWeekByTs());
+
+// c.setDate('2018-1-15');
+
+// console.log(c.genWeek());
+// console.log(c.genWeekByTs());
 
 /***/ }),
 /* 1 */
@@ -128,6 +139,7 @@ var Calender = function () {
     }, {
         key: 'genWeek',
         value: function genWeek() {
+            console.time();
             var date = this.date;
 
             var y = date.getFullYear(),
@@ -156,12 +168,13 @@ var Calender = function () {
                         belong: 'current'
                     });
                 }
+                console.timeEnd();
                 return arr;
             }
-            var last = (d + (7 - wd - 1)) % mDays[m];
+            var last = (d + (7 - wd)) % mDays[m];
             if (last < d) {
                 /*一个月的最后一周，有下周的日期*/
-                var start = d - wd;
+                var start = d - wd + 1;
                 while (start <= mDays[m]) {
                     arr.push({
                         date: [y, m + 1, start++],
@@ -172,10 +185,11 @@ var Calender = function () {
                 m == 11 && y++;
                 while (i <= last) {
                     arr.push({
-                        date: [y, m == 11 ? 1 : m + 1, i],
+                        date: [y, m == 11 ? 1 : m + 2, i++],
                         belong: 'next'
                     });
                 }
+                console.timeEnd();
                 return arr;
             }
             var s = d - wd + 1,
@@ -186,7 +200,33 @@ var Calender = function () {
                     belong: 'current'
                 });
             }
+            console.timeEnd();
             return arr;
+        }
+    }, {
+        key: 'genWeekByTs',
+        value: function genWeekByTs() {
+            console.time();
+            var date = this.date;
+
+            var wd = date.getDay() == 0 ? 7 : date.getDay(); //周几
+            var d = date.getDate();
+            var arr = [],
+                startTs = date.getTime() - wd * 86400000;
+            var i = 0;
+            while (i++ < 7) {
+                var dd = new Date(startTs + 86400000 * i);
+                arr.push({
+                    date: [dd.getFullYear(), dd.getMonth() + 1, dd.getDate()]
+                });
+            }
+            console.timeEnd();
+            return arr;
+        }
+    }, {
+        key: 'setDate',
+        value: function setDate(str) {
+            this.date = new Date(str);
         }
     }]);
 
