@@ -1,7 +1,19 @@
 import Calender from './calender';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const c = new Calender('2018-2-28');
+class App extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            cal:new Calender()
+        };
+    }
+    render(){
+        return (
+            "Hello LIKO"
+        )
+    }
+}
 
-// console.log(c.genWeek());
-// console.log(c.genWeekByTs());
-console.log(c.genMonth());
+ReactDOM.render(<App/>,document.getElementById('app'));

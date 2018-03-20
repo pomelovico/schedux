@@ -13,9 +13,6 @@ export default class Calender {
     constructor(str){
         this.date = new Date(str);
     }
-    setDate(){
-
-    }
     /*生成 5 * 7 的数组，对应一个月（包含上个月的最后几天和下个月的开头几天）*/
     genMonth(){
         let {date} = this;
