@@ -76,10 +76,11 @@ var _calender2 = _interopRequireDefault(_calender);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var c = new _calender2.default('2018-1-29');
+var c = new _calender2.default('2018-2-28');
 
-console.log(c.genWeek());
-console.log(c.genWeekByTs());
+// console.log(c.genWeek());
+// console.log(c.genWeekByTs());
+console.log(c.genMonth());
 
 /***/ }),
 /* 1 */
@@ -124,14 +125,23 @@ var Calender = function () {
 
             var y = date.getFullYear(),
                 m = date.getMonth(),
-                d = date.getDay();
+                d = date.getDay(),
+                arr = [],
+                dateStr = void 0;
+            for (var i = 0; i < 5; i++) {
+                if (i == 4 && !(0, _utils.isLeapYear)(y) && m == 1) {
+                    dateStr = [y, m + 1, 28].join('-');
+                } else {
+                    dateStr = [y, m + 1, 1 + i * 7].join('-');
+                }
+                arr.push(this.genWeekByTs(new Date(dateStr)));
+            }
+            return arr;
         }
     }, {
         key: 'genWeek',
-        value: function genWeek() {
-            console.time();
-            var date = this.date;
-
+        value: function genWeek(date) {
+            date = date ? date : this.date;
             var y = date.getFullYear(),
                 m = date.getMonth(),
                 d = date.getDate(),
@@ -158,7 +168,7 @@ var Calender = function () {
                         belong: 'current'
                     });
                 }
-                console.timeEnd();
+
                 return arr;
             }
             var last = (d + (7 - wd)) % mDays[m];
@@ -179,7 +189,7 @@ var Calender = function () {
                         belong: 'next'
                     });
                 }
-                console.timeEnd();
+
                 return arr;
             }
             var s = d - wd + 1,
@@ -190,22 +200,20 @@ var Calender = function () {
                     belong: 'current'
                 });
             }
-            console.timeEnd();
+
             return arr;
         }
     }, {
         key: 'genWeekByTs',
-        value: function genWeekByTs() {
-            console.time();
-            var date = this.date;
-
+        value: function genWeekByTs(date) {
+            date = date ? date : this.date;
             var wd = date.getDay() == 0 ? 7 : date.getDay(),
                 d = date.getDate(),
                 cm = date.getMonth();
             var arr = [],
                 startTs = date.getTime() - wd * 86400000;
             var i = 0,
-                belong = 'current';
+                belong = void 0;
             while (i++ < 7) {
                 var dd = new Date(startTs + 86400000 * i);
                 var m = dd.getMonth();
@@ -213,13 +221,15 @@ var Calender = function () {
                     belong = 'last';
                 } else if (m > cm || cm == 11 && m == 0) {
                     belong = 'next';
+                } else {
+                    belong = 'current';
                 }
                 arr.push({
                     date: [dd.getFullYear(), m + 1, dd.getDate()],
                     belong: belong
                 });
             }
-            console.timeEnd();
+
             return arr;
         }
     }, {

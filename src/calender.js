@@ -21,11 +21,21 @@ export default class Calender {
         let {date} = this;
         let y = date.getFullYear(),
             m = date.getMonth(),
-            d = date.getDay();
+            d = date.getDay(),
+            arr = [],
+            dateStr;
+        for(let i=0;i<5;i++){
+            if(i == 4 && !isLeapYear(y) && m == 1){
+                dateStr = [y,m+1,28].join('-');
+            }else{
+                dateStr = [y,m+1,1+i*7].join('-');
+            }
+            arr.push(this.genWeekByTs(new Date(dateStr)));
+        }
+        return arr;
     }
-    genWeek(){
-        console.time();
-        let {date} = this;
+    genWeek(date){
+        date = date ? date : this.date;
         let y = date.getFullYear(),
             m = date.getMonth(),
             d = date.getDate(),
@@ -51,7 +61,7 @@ export default class Calender {
                     belong:'current'
                 });
             }
-            console.timeEnd();
+            
             return arr;
         }
         var last = (d + (7 - wd)) % mDays[m];
@@ -72,7 +82,7 @@ export default class Calender {
                     belong:'next'
                 })
             }
-            console.timeEnd();
+            
             return arr;
         }
         var s = d - wd + 1,
@@ -83,19 +93,18 @@ export default class Calender {
                 belong:'current'
             })
         }
-        console.timeEnd();
+        
         return arr;
     }
-    genWeekByTs(){
-        console.time();
-        let {date} = this;
+    genWeekByTs(date){
+        date = date ? date : this.date;
         let wd = date.getDay() == 0 ? 7 : date.getDay() ,
             d =  date.getDate(),
             cm = date.getMonth();
         let arr = [],
             startTs = date.getTime() - wd * 86400000;
         let i = 0,
-            belong = 'current';
+            belong;
         while((i++)<7){
             var dd = new Date(startTs + 86400000 * i);
             var m = dd.getMonth();
@@ -103,13 +112,15 @@ export default class Calender {
                 belong = 'last';
             }else if((m > cm) || (cm == 11 && m == 0)){
                 belong = 'next';
+            }else{
+                belong = 'current';
             }
             arr.push({
                 date:[dd.getFullYear(),m + 1,dd.getDate()],
                 belong:belong
             })
         }
-        console.timeEnd();
+        
         return arr;
     }
     setDate(str){
