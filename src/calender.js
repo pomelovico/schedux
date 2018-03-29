@@ -11,7 +11,7 @@ const monthDays = [
 ]
 export default class Calender {
     constructor(str){
-        this.date = new Date(str);
+        this.date = str ? new Date(str) : new Date();
     }
     /*生成 5 * 7 的数组，对应一个月（包含上个月的最后几天和下个月的开头几天）*/
     genMonth(){
@@ -27,7 +27,7 @@ export default class Calender {
             }else{
                 dateStr = [y,m+1,1+i*7].join('-');
             }
-            arr.push(this.genWeekByTs(new Date(dateStr)));
+            arr = arr.concat(this.genWeekByTs(new Date(dateStr)));
         }
         return arr;
     }
